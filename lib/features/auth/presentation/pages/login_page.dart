@@ -9,6 +9,7 @@ import '../../../../router/route_names.dart';
 import '../../providers/auth_provider.dart';
 import '../widgets/auth_layout.dart';
 import '../widgets/unverified_email_dialog.dart';
+import '../../../../core/utils/input_formatters.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -122,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _emailController,
+            inputFormatters: noWhitespace,
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(hintText: 'user@example.com'),
             validator: (val) {
@@ -136,6 +138,7 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _passwordController,
+            inputFormatters: noWhitespace,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
               hintText: 'Enter Password',

@@ -8,6 +8,7 @@ import '../../../../core/widgets/app_toast.dart';
 import '../../../../router/route_names.dart';
 import '../../providers/auth_provider.dart';
 import '../widgets/auth_layout.dart';
+import '../../../../core/utils/input_formatters.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -81,6 +82,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _emailController,
+            inputFormatters: noWhitespace,
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(hintText: 'user@example.com'),
             validator: (val) {

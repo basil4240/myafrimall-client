@@ -7,6 +7,7 @@ import '../../../../core/widgets/app_toast.dart';
 import '../../../../router/route_names.dart';
 import '../../providers/auth_provider.dart';
 import '../widgets/auth_layout.dart';
+import '../../../../core/utils/input_formatters.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   final String email;
@@ -94,6 +95,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _otpController,
+            inputFormatters: noWhitespace,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(hintText: '6-digit code'),
             validator: (val) {
@@ -108,6 +110,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _passwordController,
+            inputFormatters: noWhitespace,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
               hintText: 'Enter new password',
@@ -134,6 +137,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _confirmController,
+            inputFormatters: noWhitespace,
             obscureText: _obscureConfirm,
             decoration: InputDecoration(
               hintText: 'Re-enter new password',

@@ -9,6 +9,7 @@ import '../../../../router/route_names.dart';
 import '../../providers/auth_provider.dart';
 import '../widgets/auth_layout.dart';
 import '../widgets/unverified_email_dialog.dart';
+import '../../../../core/utils/input_formatters.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -193,6 +194,7 @@ class _SignupPageState extends State<SignupPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _emailController,
+            inputFormatters: noWhitespace,
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(hintText: 'user@example.com'),
             validator: (val) {
@@ -208,6 +210,7 @@ class _SignupPageState extends State<SignupPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _phoneController,
+            inputFormatters: noWhitespace,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
               hintText: '8012345678',
@@ -231,6 +234,7 @@ class _SignupPageState extends State<SignupPage> {
           const SizedBox(height: AppSpacing.sm),
           TextFormField(
             controller: _passwordController,
+            inputFormatters: noWhitespace,
             obscureText: _obscurePassword,
             decoration: InputDecoration(
               hintText: 'Enter Password',
