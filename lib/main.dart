@@ -1,36 +1,77 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'core/network/network.dart';
+import 'core/theme/app_theme.dart';
+import 'core/theme/theme_provider.dart';
+import 'features/addresses/providers/addresses_provider.dart';
+import 'features/auth/providers/auth_provider.dart';
+import 'features/dashboard/providers/dashboard_provider.dart';
+import 'features/shipments/providers/shipments_provider.dart';
+import 'router/app_router.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  DioClient.instance.init();
+
+  final authProvider = AuthProvider();
+  await authProvider.checkAuthStatus();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: authProvider),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardProvider()),
+        ChangeNotifierProvider(create: (_) => ShipmentsProvider()),
+        ChangeNotifierProvider(create: (_) => AddressesProvider()),
+      ],
+      child: MyApp(authProvider: authProvider),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  final AuthProvider authProvider;
 
-  // This widget is the root of your application.
+  const MyApp({super.key, required this.authProvider});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final AppRouter _appRouter;
+  late final StreamSubscription<void> _forceLogoutSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _appRouter = AppRouter(authProvider: widget.authProvider);
+    _forceLogoutSub =
+        DioClient.instance.onForceLogout.listen((_) {
+      widget.authProvider.forceLogout();
+    });
+  }
+
+  @override
+  void dispose() {
+    _forceLogoutSub.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: Container(),
+    final themeMode = context.watch<ThemeProvider>().themeMode;
+
+    return MaterialApp.router(
+      title: 'Myafrimall',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: themeMode,
+      routerConfig: _appRouter.router,
     );
   }
 }
